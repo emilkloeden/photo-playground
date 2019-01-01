@@ -1,0 +1,137 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+}
+
+#root {
+  height: 100%;
+  margin: 10px;
+}
+
+#root h1 {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  text-align: center;
+  position: relative;
+}
+
+#photo-frame {
+  position: relative;
+}
+
+.button-row {
+  margin: 0, auto;
+  text-align: center;
+}
+
+.row {
+  width: 100%;
+  min-height: 30px;
+}
+
+.vertical-photo-row {
+  height: ;
+}
+
+.col {
+  display: inline-block;
+  height: 100%;
+}
+
+.col-1 {
+  width: calc(100% / 12);
+}
+
+.col-2 {
+  width: calc(100% / 6);
+}
+
+.col-3 {
+  width: calc(100% / 4);
+}
+
+.gap {
+  border: 1px solid tomato;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+div.overlay {
+  z-index: 100;
+  height: 100%;
+  width: 100%;
+  display: grid;
+}
+
+div.overlay.off {
+  opacity: 0;
+  display: none;
+}
+
+.custom-file-upload,
+button {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: steelblue;
+  color: whitesmoke;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+.rotate-180 {
+  transform: rotate(180deg);
+}
+.rotate-270 {
+  transform: rotate(-90deg);
+}
+
+.custom-file-upload:hover,
+button:hover {
+  opacity: 0.85;
+}
+
+#file-picker {
+  margin-left: 10px;
+}
+
+#photo-frame {
+  /* A4 size  */
+  /* height: 842px; */
+  /* width: 595px; */
+  /* Poster size :  49.5 * 39.5 */
+  height: 1403px;
+  width: 1120px;
+  margin: auto;
+  border: 30px solid black;
+}
+
+#photo-frame.landscape-orientation {
+  width: 1403px;
+  height: 1120px;
+  margin: auto;
+  border: 30px solid black;
+}
+
+.img {
+  position: relative;
+}
+
+.img-portrait {
+  height: 397px;
+  width: 269px;
+}
+
+.img-landscape {
+  height: 269px;
+  width: 397px;
+}
