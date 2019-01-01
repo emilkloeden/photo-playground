@@ -1,0 +1,24 @@
+{
+  "name": "photo-playground",
+  "version": "1.0.0",
+  "description": "A small app to prototype a very specific photo frame collage 🖼️",
+  "main": "Rx.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emilkloeden/photo-playground.git"
+  },
+  "keywords": [],
+  "author": "Emil Kloeden <emilkloeden@gmail.com> (https://github.com/emilkloeden/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/emilkloeden/photo-playground/issues"
+  },
+  "homepage": "https://github.com/emilkloeden/photo-playground#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}

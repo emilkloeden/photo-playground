@@ -24,7 +24,6 @@
   );
 
   function isPortrait(el) {
-    console.log(el.clientWidth);
     return el.clientWidth < el.clientHeight;
   }
 
@@ -54,7 +53,6 @@
   }
 
   function toggleOverlay() {
-    console.log("toggle overlay");
     let [portraitOverlay, landscapeOverlay] = overlays;
     if (isPortrait(frame)) {
       if (portraitOverlay.classList.contains("off")) {
@@ -65,8 +63,6 @@
       if (!landscapeOverlay.classList.contains("off")) {
         landscapeOverlay.classList.add("off");
       }
-
-      console.log(portraitOverlay, landscapeOverlay);
     } else {
       if (landscapeOverlay.classList.contains("off")) {
         landscapeOverlay.classList.remove("off");
@@ -76,8 +72,6 @@
       if (!portraitOverlay.classList.contains("off")) {
         portraitOverlay.classList.add("off");
       }
-
-      console.log(portraitOverlay, landscapeOverlay);
     }
   }
 
