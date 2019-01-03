@@ -7,6 +7,7 @@
   const loadFrameButton = document.getElementById("load-frame");
   const rotateFrameButton = document.getElementById("rotate-button");
   const toggleOverlayButton = document.getElementById("toggle-overlay");
+  const downloadImageButton = document.getElementById("save-file");
 
   const mouseMoves$ = Rx.Observable.fromEvent(window, "mousemove");
   const mouseUp$ = Rx.Observable.fromEvent(frame, "mouseup");
@@ -17,6 +18,7 @@
     toggleOverlayButton,
     "click"
   );
+  const downloadClicks$ = Rx.Observable.fromEvent(downloadImageButton, "click");
 
   const rotateFrameButtonClicks$ = Rx.Observable.fromEvent(
     rotateFrameButton,
@@ -225,10 +227,28 @@
     return image;
   }
 
+  function downloadURI(uri) {
+    const link = document.createElement("a");
+    link.download = "photo frame.png";
+    link.href = uri;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    delete link;
+  }
+
+  function downloadImage() {
+    html2canvas(frame).then(function(canvas) {
+      const dataURL = canvas.toDataURL("image/png");
+      downloadURI(dataURL);
+    });
+  }
+
   saveFrameClicks$.subscribe(_ => savePhotoFrame());
   loadFrameClicks$.subscribe(_ => loadPhotoFrame());
   overlayButtonClicks$.subscribe(_ => toggleOverlay());
   rotateFrameButtonClicks$.subscribe(_ => toggleOrientation(frame));
-
+  downloadClicks$.subscribe(downloadImage);
   loadFile$.subscribe();
 })();

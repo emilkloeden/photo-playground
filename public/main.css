@@ -31,10 +31,6 @@ body {
   min-height: 30px;
 }
 
-.vertical-photo-row {
-  height: ;
-}
-
 .col {
   display: inline-block;
   height: 100%;
@@ -73,6 +69,7 @@ div.overlay.off {
 }
 
 .custom-file-upload,
+.custom-file-download,
 button {
   border: 1px solid #ccc;
   display: inline-block;
@@ -85,16 +82,11 @@ button {
   font-size: 1rem;
 }
 
-.rotate-90 {
-  transform: rotate(90deg);
-}
-.rotate-180 {
-  transform: rotate(180deg);
-}
-.rotate-270 {
-  transform: rotate(-90deg);
+a.custom-file-download {
+  text-decoration: none;
 }
 
+.custom-file-download:hover,
 .custom-file-upload:hover,
 button:hover {
   opacity: 0.85;
