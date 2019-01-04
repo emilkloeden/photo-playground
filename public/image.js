@@ -239,7 +239,14 @@
   }
 
   function downloadImage() {
-    html2canvas(frame).then(function(canvas) {
+    const options = {
+      width: frame.offsetWidth,
+      height: frame.offsetHeight,
+      scale: 1,
+      logging: false
+    };
+
+    html2canvas(frame, options).then(function(canvas) {
       const dataURL = canvas.toDataURL("image/png");
       downloadURI(dataURL);
     });
