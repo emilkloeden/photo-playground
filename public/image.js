@@ -1,5 +1,7 @@
 (function() {
   let imageNumber = 1;
+
+  // #region DOMSelections
   let frame = document.getElementById("photo-frame");
   const overlays = document.querySelectorAll(".overlay");
   const filePicker = document.getElementById("file-picker");
@@ -8,7 +10,12 @@
   const rotateFrameButton = document.getElementById("rotate-button");
   const toggleOverlayButton = document.getElementById("toggle-overlay");
   const downloadImageButton = document.getElementById("save-file");
+  // #endregion DOMSelections
 
+  // #region ObservableCreations
+  const keyUp$ = Rx.Observable.fromEvent(window, "keyup");
+  const deletePresses$ = keyUp$.filter(e => e.code == "Backspace");
+  const windowClicks$ = Rx.Observable.fromEvent(document, "click");
   const mouseMoves$ = Rx.Observable.fromEvent(window, "mousemove");
   const mouseUp$ = Rx.Observable.fromEvent(frame, "mouseup");
   const filePickerChanges$ = Rx.Observable.fromEvent(filePicker, "change");
@@ -24,7 +31,9 @@
     rotateFrameButton,
     "click"
   );
+  // #endregion ObservableCreations
 
+  // #region canvasRotation
   function isPortrait(el) {
     return el.clientWidth < el.clientHeight;
   }
@@ -38,6 +47,8 @@
     switchOverlay();
   }
 
+  // #endregion canvasRotation
+  // #region overlay
   function switchOverlay() {
     let [portraitOverlay, landscapeOverlay] = overlays;
     if (
@@ -76,7 +87,9 @@
       }
     }
   }
+  // #endregion overlay
 
+  // #region checkPointAndLoadPhotoFrame
   function savePhotoFrame() {
     let overlayStatuses = Array.from(overlays, overlay => overlay.className);
     let photos = Array.from(document.querySelectorAll(".img"), photo => {
@@ -109,7 +122,7 @@
 
   function loadPhotoFrame() {
     const images = frame.querySelectorAll("img");
-    images.forEach(image => image.parentNode.removeChild(image));
+    images.forEach(img => img.parentNode.removeChild(img));
 
     const photos = JSON.parse(localStorage.getItem("photos"));
     frame.className = localStorage.getItem("frame-className") || "";
@@ -125,13 +138,6 @@
     photos.forEach(reloadPhoto);
   }
 
-  const loadFile$ = filePickerChanges$.map(e => {
-    e.preventDefault();
-    let image = addImageToCanvas();
-
-    handleMouseMoves(image);
-  });
-
   function reloadPhoto(photo) {
     const { classList, src, id, top, left, position, cursor } = photo;
     const img = new Image();
@@ -145,41 +151,21 @@
 
     frame.appendChild(img);
     handleMouseMoves(img);
+    selectImage(img);
   }
+  // #endregion checkPointAndLoadPhotoFrame
 
-  function handleMouseMoves(image) {
-    const mousedown$ = Rx.Observable.fromEvent(image, "mousedown");
-    const drags = mousedown$.flatMap(md => {
-      md.preventDefault();
+  // #region loadFile
+  const loadFile$ = filePickerChanges$.map(e => {
+    e.preventDefault();
+    let image = addImageToCanvas();
 
-      const { offsetX, offsetY } = md;
+    handleMouseMoves(image);
+    selectImage(image);
+  });
+  // #endregion loadFile
 
-      let canvasX = frame.offsetLeft;
-      let canvasY = frame.offsetTop;
-
-      return mouseMoves$
-        .map(mm => {
-          mm.preventDefault();
-          const { pageX, pageY } = mm;
-          return {
-            pageX,
-            pageY,
-            canvasX,
-            canvasY,
-            offsetX,
-            offsetY
-          };
-        })
-        .takeUntil(mouseUp$);
-    });
-
-    drags.subscribe(e => {
-      const { pageX, pageY, canvasX, canvasY, offsetX, offsetY } = e;
-      image.style.left = pageX - canvasX - offsetX + "px";
-      image.style.top = pageY - canvasY - offsetY + "px";
-    });
-  }
-
+  // #region addImageToCanvas
   function addImageToCanvas() {
     const reader = new FileReader();
 
@@ -223,10 +209,77 @@
 
     frame.appendChild(img);
 
-    const image = document.getElementById(id);
-    return image;
+    return document.getElementById(id);
   }
+  // #endregion addImageToCanvas
 
+  // #region selectImage
+  function selectImage(img) {
+    const mouseClick$ = Rx.Observable.fromEvent(img, "click");
+    mouseClick$.subscribe(e => {
+      Array.from(document.querySelectorAll("img"), el =>
+        el.classList.remove("selected")
+      );
+      e.target.classList.add("selected");
+    });
+  }
+  // #endregion selectImage
+
+  // #region deselectImage
+  function deselectImage(e) {
+    if (e.target.nodeName !== "IMG") {
+      Array.from(document.querySelectorAll("img"), el =>
+        el.classList.remove("selected")
+      );
+    }
+  }
+  // #endregion deselectImage
+
+  // #region dragImage
+  function handleMouseMoves(img) {
+    const mousedown$ = Rx.Observable.fromEvent(img, "mousedown");
+    const drags = mousedown$.flatMap(md => {
+      md.preventDefault();
+
+      const { offsetX, offsetY } = md;
+
+      let canvasX = frame.offsetLeft;
+      let canvasY = frame.offsetTop;
+
+      return mouseMoves$
+        .map(mm => {
+          mm.preventDefault();
+          const { pageX, pageY } = mm;
+          return {
+            pageX,
+            pageY,
+            canvasX,
+            canvasY,
+            offsetX,
+            offsetY
+          };
+        })
+        .takeUntil(mouseUp$);
+    });
+
+    drags.subscribe(e => {
+      const { pageX, pageY, canvasX, canvasY, offsetX, offsetY } = e;
+      img.style.left = pageX - canvasX - offsetX + "px";
+      img.style.top = pageY - canvasY - offsetY + "px";
+    });
+  }
+  // #endregion dragImage
+
+  // #region deleteImage
+  function deleteSelectedImage() {
+    const img = document.querySelector(".selected");
+    if (img !== null) {
+      frame.removeChild(img);
+    }
+  }
+  // #endregion deleteImage
+
+  // #region downloadCanvas
   function downloadURI(uri) {
     const link = document.createElement("a");
     link.download = "photo frame.png";
@@ -251,11 +304,14 @@
       downloadURI(dataURL);
     });
   }
+  // #endregion downloadCanvas
 
   saveFrameClicks$.subscribe(_ => savePhotoFrame());
   loadFrameClicks$.subscribe(_ => loadPhotoFrame());
   overlayButtonClicks$.subscribe(_ => toggleOverlay());
   rotateFrameButtonClicks$.subscribe(_ => toggleOrientation(frame));
   downloadClicks$.subscribe(downloadImage);
+  deletePresses$.subscribe(deleteSelectedImage);
+  windowClicks$.subscribe(deselectImage);
   loadFile$.subscribe();
 })();
