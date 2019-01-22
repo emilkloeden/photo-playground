@@ -127,3 +127,26 @@ button:hover {
   height: 269px;
   width: 397px;
 }
+
+.selected {
+  border: 10px solid aqua;
+}
+
+.context-menu {
+  width: 160px;
+  box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 1);
+  position: absolute;
+  z-index: 100;
+  display: none;
+}
+.context-menu .menu-options {
+  list-style: none;
+}
+.context-menu .menu-options .menu-option {
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+}
+.context-menu .menu-options .menu-option hover {
+  background: rgba(0, 0, 0, 1);
+}
